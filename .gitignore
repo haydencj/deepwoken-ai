@@ -1,3 +1,4 @@
 .env
 .python-version
 ai/
+__pycache__/

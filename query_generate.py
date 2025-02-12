@@ -55,13 +55,3 @@ def query_and_generate_answer(query_text: str, top_k: int = 5) -> str:
             print(chunk.choices[0].delta.content, end="")
         sys.stdout.flush()
     print()  # for final newline
-
-
-if __name__ == "__main__":
-    import sys
-    if len(sys.argv) < 2:
-        print("Usage: python query_generate.py <query_text>")
-        sys.exit(1)
-    query_text = " ".join(sys.argv[1:])
-    answer = query_and_generate_answer(query_text)
-    print("Answer:", answer)

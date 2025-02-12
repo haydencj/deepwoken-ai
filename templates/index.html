@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DeepwokenBot Chat</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2em;
+      }
+      #response {
+        margin-top: 1em;
+        border: 1px solid #ccc;
+        padding: 1em;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>DeepwokenBot Chat</h1>
+    <form id="chat-form">
+      <input
+        type="text"
+        id="query"
+        placeholder="How many points do I need in medium weapon to equip the shattered katana?"
+        required
+        style="width: 50%;"
+      />
+      <button type="submit">Send</button>
+    </form>
+    <!-- This div will display the formatted answer -->
+    <div id="response"></div>
+
+    <!-- Include marked.js from CDN to convert Markdown to HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+      document.getElementById("chat-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const query = document.getElementById("query").value;
+        const responseDiv = document.getElementById("response");
+        // Clear any previous response
+        responseDiv.innerHTML = "";
+        let accumulatedMarkdown = "";
+
+        // Connect to the streaming endpoint via Server-Sent Events (SSE).
+        const eventSource = new EventSource(`/stream?query=${encodeURIComponent(query)}`);
+
+        eventSource.onmessage = function (event) {
+          // Append the new chunk of markdown text
+          accumulatedMarkdown += event.data;
+          // Convert the accumulated markdown to HTML and update the response div
+          responseDiv.innerHTML = marked.parse(accumulatedMarkdown);
+        };
+
+        eventSource.onerror = function () {
+          eventSource.close();
+        };
+      });
+    </script>
+  </body>
+</html>

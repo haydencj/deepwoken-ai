@@ -51,7 +51,9 @@ def query_and_generate_answer(query_text: str, top_k: int = 5) -> str:
         # Iterate over the streamed response and print tokens as they arrive.
     for chunk in stream:
         # For each chunk, extract the new token if available.
-        if chunk.choices[0].delta.content is not None:
-            print(chunk.choices[0].delta.content, end="")
+        token = chunk.choices[0].delta.content
+        if token is not None:
+            print(token, end="")
+            yield token
         sys.stdout.flush()
     print()  # for final newline
